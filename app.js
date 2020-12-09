@@ -20,14 +20,22 @@ app.get("/", function(req,res){
         https.get(url, function(response){
             console.log(response.statuscode );
 
-            if(response.statusCode!=200){
-                res.sendFile(__dirname + "/failure.html");}
            
+            if(response.statusCode!=200){
+                res.sendFile(__dirname + "/failure.html");
+                console.log("abc")}
 
             response.on("data",function(data){
                 
                 const weatherdata=JSON.parse(data)
+                console.log(weatherdata)
+                if(weatherdata.cod!=200){
+                    res.write('<h1>City not found</h1>')
+                    res.send();
+                }
+                else{
                const temp =weatherdata.main.temp
+               
                //console.log(temp);
                const description=weatherdata.weather[0].description
                const icon=weatherdata.weather[0].icon
@@ -38,7 +46,7 @@ app.get("/", function(req,res){
                res.write("<h1>The weather in " + query +" is " + description +"</h1>")
                
                 res.write("<img src=" + imgurl + ">")
-               res.send();
+               res.send();}
 
             });
         });     
@@ -46,6 +54,6 @@ app.get("/", function(req,res){
         })
 
 
-app.listen(process.env.PORT || 3000,function(){
+app.listen(process.env.PORT || 3001,function(){
     console.log("All ok");
 })
